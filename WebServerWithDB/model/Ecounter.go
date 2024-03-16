@@ -21,13 +21,13 @@ const (
 */
 
 type Encounter struct {
-	AuthorId    int    `json:"authorId"`
-	Id          int    `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	XP          int    `json:"xp"`
-	Status      string `json:"status"`
-	Type        string `json:"type"`
-	Longitude   int    `json:"longitude"`
-	Latitude    int    `json:"latitude"`
+	AuthorId    int
+	Description string
+	Id          int
+	Latitude    int
+	Longitude   int
+	Name        string
+	Status      string
+	Type        string
+	XP          int
 }
