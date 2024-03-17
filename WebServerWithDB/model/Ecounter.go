@@ -21,13 +21,18 @@ const (
 */
 
 type Encounter struct {
-	AuthorId    int
-	Description string
-	Id          int
-	Latitude    int
-	Longitude   int
-	Name        string
-	Status      string
-	Type        string
-	XP          int
+	AuthorId          int
+	Description       string
+	Id                int
+	Latitude          float64
+	Longitude         float64
+	Name              string
+	Status            string
+	Type              string
+	XP                int
+	LocationLongitude float64
+	LocationLatitude  float64
+	Image             string
+	Range             float64
+	RequiredPeople    int
 }
