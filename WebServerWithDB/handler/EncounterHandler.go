@@ -7,10 +7,22 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/gorilla/mux"
+	"gorm.io/gorm"
 )
 
 type EncounterHandler struct {
 	EncounterService *service.EncounterService
+}
+
+func NewEncounterHandler(db *gorm.DB) *EncounterHandler {
+	encounterService := service.NewEncounterService(db)
+	return &EncounterHandler{EncounterService: encounterService}
+}
+
+func (h *EncounterHandler) RegisterRoutes(router *mux.Router) {
+	router.HandleFunc("/encounters", h.Create).Methods("POST")
 }
 
 func (handler *EncounterHandler) Create(writer http.ResponseWriter, req *http.Request) {
@@ -21,18 +33,6 @@ func (handler *EncounterHandler) Create(writer http.ResponseWriter, req *http.Re
 	fmt.Println("errr", errr)
 	fmt.Println("Primljeno telo zahtjeva:", string(body))
 
-	// Parsirajte JSON telo u mapu
-	var data map[string]interface{}
-	erre := json.Unmarshal(body, &data)
-	if erre != nil {
-		fmt.Println("Greška pri parsiranju JSON-a:", erre)
-		writer.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	// Ispis mape
-	fmt.Println("Mapa nakon parsiranja JSON-a:", data)
-
 	errs := json.Unmarshal(body, &encounter)
 	if errs != nil {
 		fmt.Println("Greška pri parsiranju JSON-a:", errs)
@@ -42,15 +42,7 @@ func (handler *EncounterHandler) Create(writer http.ResponseWriter, req *http.Re
 
 	// Ispis mape
 	fmt.Println("Mapa nakon parsiranja JSON-a:", encounter)
-	/*
-		err := json.NewDecoder(req.Body).Decode(&encounter)
-		if err != nil {
 
-			println("Error while parsing json")
-			writer.WriteHeader(http.StatusBadRequest)
-			return
-		}
-	*/
 	errp := handler.EncounterService.Create(&encounter)
 	if errp != nil {
 		println("Error while creating a new encounter")
