@@ -23,3 +23,11 @@ func (service *EncounterExecutionService) Create(encounter *model.EncounterExecu
 	}
 	return nil
 }
+
+func (service *EncounterExecutionService) GetAllCompletedByTourist(touristID int64) ([]model.EncounterExecution, error) {
+	encounterExecutions, err := service.EncounterExecutionRepo.GetAllCompletedByTourist(touristID)
+	if err != nil {
+		return nil, err
+	}
+	return encounterExecutions, nil
+}
