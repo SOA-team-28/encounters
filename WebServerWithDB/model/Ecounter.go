@@ -35,4 +35,5 @@ type Encounter struct {
 	Image             string
 	Range             float64
 	RequiredPeople    int
+	CheckPointId      int
 }
