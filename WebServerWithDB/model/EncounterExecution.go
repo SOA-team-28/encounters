@@ -10,4 +10,5 @@ type EncounterExecution struct {
 	TouristId   int
 	Status      string
 	StartTime   *time.Time
+	Encounter   Encounter
 }

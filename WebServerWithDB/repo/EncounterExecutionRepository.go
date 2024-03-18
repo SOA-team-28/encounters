@@ -23,6 +23,29 @@ func (repo *EncounterExecutionRepository) CreateEncounterExecution(encounterExec
 	return nil
 }
 
+
+func (repo *EncounterExecutionRepository) UpdateStatusByCheckPointId(checkPointId int) error {
+	var encounterExecution model.EncounterExecution
+
+	dbResult := repo.DatabaseConnection.
+		Joins("JOIN encounters ON encounter_executions.encounter_id = encounters.id").
+		Where("encounters.check_point_id = ?", checkPointId).
+		Find(&encounterExecution)
+	if dbResult.Error != nil {
+		return dbResult.Error
+	}
+
+	encounterExecution.Status = "Completed"
+
+	dbResult = repo.DatabaseConnection.Save(&encounterExecution)
+	if dbResult.Error != nil {
+		return dbResult.Error
+	}
+
+	println("Updated successfully! ")
+	return nil
+}
+
 func (repo *EncounterExecutionRepository) GetAllCompletedByTourist(touristID int64) ([]model.EncounterExecution, error) {
 	var encounterExecutions []model.EncounterExecution
 
@@ -37,4 +60,5 @@ func (repo *EncounterExecutionRepository) GetAllCompletedByTourist(touristID int
 	}
 
 	return encounterExecutions, nil
+
 }
