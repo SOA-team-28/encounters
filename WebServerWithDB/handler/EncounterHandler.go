@@ -27,6 +27,7 @@ func NewEncounterHandler(db *gorm.DB) *EncounterHandler {
 func (h *EncounterHandler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/encounters", h.Create).Methods("POST")
 	router.HandleFunc("/encounters/getById/{id}", h.GetByID).Methods("GET")
+	router.HandleFunc("/encounters/getByCheckPoint/{id}", h.GetByCheckPointID).Methods("GET")
 }
 
 func (handler *EncounterHandler) Create(writer http.ResponseWriter, req *http.Request) {
@@ -68,6 +69,26 @@ func (handler *EncounterHandler) GetByID(writer http.ResponseWriter, req *http.R
 	}
 	log.Printf("Encounter with ID: %d", id)
 	encounter, err := handler.EncounterService.Find(id)
+	writer.Header().Set("Content-Type", "application/json")
+	if err != nil {
+		writer.WriteHeader(http.StatusNotFound)
+		return
+	}
+	writer.WriteHeader(http.StatusOK)
+	json.NewEncoder(writer).Encode(encounter)
+}
+
+func (handler *EncounterHandler) GetByCheckPointID(writer http.ResponseWriter, req *http.Request) {
+	params := mux.Vars(req)
+	idString := params["id"]
+	id, err := strconv.Atoi(idString)
+	if err != nil {
+		log.Println("Error parsing ID:", err)
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	log.Printf("Encounter with ID: %d", id)
+	encounter, err := handler.EncounterService.FindByCheckPointId(id)
 	writer.Header().Set("Content-Type", "application/json")
 	if err != nil {
 		writer.WriteHeader(http.StatusNotFound)
