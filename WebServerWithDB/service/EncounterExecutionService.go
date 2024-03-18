@@ -23,10 +23,20 @@ func (service *EncounterExecutionService) Create(encounter *model.EncounterExecu
 	}
 	return nil
 }
+
 func (service *EncounterExecutionService) UpdateStatus(checkPointId int) error {
 	err := service.EncounterExecutionRepo.UpdateStatusByCheckPointId(checkPointId)
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+func (service *EncounterExecutionService) GetAllCompletedByTourist(touristID int64) ([]model.EncounterExecution, error) {
+	encounterExecutions, err := service.EncounterExecutionRepo.GetAllCompletedByTourist(touristID)
+	if err != nil {
+		return nil, err
+	}
+	return encounterExecutions, nil
+
 }
