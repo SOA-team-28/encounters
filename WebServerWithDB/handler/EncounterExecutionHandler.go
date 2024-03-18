@@ -8,6 +8,9 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"log"
+	"strconv"
+
 	"github.com/gorilla/mux"
 	"gorm.io/gorm"
 )
@@ -23,6 +26,7 @@ func NewEncounterExecutionHandler(db *gorm.DB) *EncounterExecutionHandler {
 
 func (h *EncounterExecutionHandler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/executions/activate", h.Create).Methods("POST")
+	router.HandleFunc("/executions/updateStatusByCheckPoint/{id}", h.UpdateStatusByCheckPointId).Methods("PUT")
 
 }
 
@@ -52,4 +56,24 @@ func (handler *EncounterExecutionHandler) Create(writer http.ResponseWriter, req
 	}
 	writer.WriteHeader(http.StatusCreated)
 	writer.Header().Set("Content-Type", "application/json")
+}
+
+func (handler *EncounterExecutionHandler) UpdateStatusByCheckPointId(writer http.ResponseWriter, req *http.Request) {
+	params := mux.Vars(req)
+	idString := params["id"]
+	id, err := strconv.Atoi(idString)
+	if err != nil {
+		log.Println("Error parsing ID:", err)
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	log.Printf("Encounter with ID: %d", id)
+	err = handler.EncounterExecutionService.UpdateStatus(id)
+	writer.Header().Set("Content-Type", "application/json")
+	if err != nil {
+		writer.WriteHeader(http.StatusNotFound)
+		return
+	}
+	writer.WriteHeader(http.StatusOK)
+
 }
