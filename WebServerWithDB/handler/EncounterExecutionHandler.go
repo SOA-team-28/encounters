@@ -22,7 +22,8 @@ func NewEncounterExecutionHandler(db *gorm.DB) *EncounterExecutionHandler {
 }
 
 func (h *EncounterExecutionHandler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/encounterExecutions", h.Create).Methods("POST")
+	//AKTIVIRANJE ENCOUNTERA
+	router.HandleFunc("/executions/activate", h.Create).Methods("POST")
 }
 
 func (handler *EncounterExecutionHandler) Create(writer http.ResponseWriter, req *http.Request) {
