@@ -29,7 +29,15 @@ func (service *EncounterService) Create(encounter *model.Encounter) error {
 func (service *EncounterService) Find(id int) (*model.Encounter, error) {
 	tour, err := service.EncounterRepo.FindById(id)
 	if err != nil {
-		return nil, fmt.Errorf("tour with id %d not found", id)
+		return nil, fmt.Errorf("execution with id %d not found", id)
+	}
+	return &tour, nil
+}
+
+func (service *EncounterService) FindByCheckPointId(id int) (*model.Encounter, error) {
+	tour, err := service.EncounterRepo.FindByCheckPointId(id)
+	if err != nil {
+		return nil, fmt.Errorf("execution with id %d not found", id)
 	}
 	return &tour, nil
 }
