@@ -22,3 +22,12 @@ func (repo *EncounterRepository) CreateEncounter(encounter *model.Encounter) err
 	println("Rows affected: ", dbResult.RowsAffected)
 	return nil
 }
+
+func (repo *EncounterRepository) FindById(id int) (model.Encounter, error) {
+	encounter := model.Encounter{}
+	dbResult := repo.DatabaseConnection.First(&encounter, "id = ?", id)
+	if dbResult.Error != nil {
+		return encounter, dbResult.Error
+	}
+	return encounter, nil
+}

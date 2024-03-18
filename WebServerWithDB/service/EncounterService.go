@@ -4,6 +4,8 @@ import (
 	"database-example/model"
 	"database-example/repo"
 
+	"fmt"
+
 	"gorm.io/gorm"
 )
 
@@ -22,4 +24,12 @@ func (service *EncounterService) Create(encounter *model.Encounter) error {
 		return err
 	}
 	return nil
+}
+
+func (service *EncounterService) Find(id int) (*model.Encounter, error) {
+	tour, err := service.EncounterRepo.FindById(id)
+	if err != nil {
+		return nil, fmt.Errorf("tour with id %d not found", id)
+	}
+	return &tour, nil
 }
