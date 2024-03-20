@@ -10,7 +10,6 @@ import (
 	"strconv"
 
 	"log"
-	"strconv"
 
 	"github.com/gorilla/mux"
 	"gorm.io/gorm"
@@ -31,6 +30,7 @@ func (h *EncounterExecutionHandler) RegisterRoutes(router *mux.Router) {
 
 	// DOHVAT SVIH ZAVRŠENIH ENCOUNTERA ZA TURISTU
 	router.HandleFunc("/executions/get-all-completed/{touristID}", h.GetAllCompletedByTourist).Methods("GET")
+	router.HandleFunc("/executions/delete/{id}", h.Delete).Methods("DELETE")
 }
 
 func (handler *EncounterExecutionHandler) GetAllCompletedByTourist(writer http.ResponseWriter, req *http.Request) {
@@ -110,4 +110,27 @@ func (handler *EncounterExecutionHandler) UpdateStatusByCheckPointId(writer http
 	}
 	writer.WriteHeader(http.StatusOK)
 
+}
+
+func (handler *EncounterExecutionHandler) Delete(writer http.ResponseWriter, req *http.Request) {
+	// Dohvatite ID susreta iz URL parametara
+	params := mux.Vars(req)
+	idString := params["id"]
+	id, err := strconv.Atoi(idString)
+	if err != nil {
+		log.Println("Error parsing ID:", err)
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// Pozovite servis za brisanje susreta
+	err = handler.EncounterExecutionService.Delete(id)
+	if err != nil {
+		log.Println("Error deleting encounter:", err)
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// Ako je brisanje uspješno, vratite status kod 204 No Content
+	writer.WriteHeader(http.StatusNoContent)
 }

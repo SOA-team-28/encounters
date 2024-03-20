@@ -28,6 +28,7 @@ func (h *EncounterHandler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/encounters", h.Create).Methods("POST")
 	router.HandleFunc("/encounters/getById/{id}", h.GetByID).Methods("GET")
 	router.HandleFunc("/encounters/getByCheckPoint/{id}", h.GetByCheckPointID).Methods("GET")
+	router.HandleFunc("/encounters/delete/{id}", h.Delete).Methods("DELETE")
 }
 
 func (handler *EncounterHandler) Create(writer http.ResponseWriter, req *http.Request) {
@@ -96,4 +97,27 @@ func (handler *EncounterHandler) GetByCheckPointID(writer http.ResponseWriter, r
 	}
 	writer.WriteHeader(http.StatusOK)
 	json.NewEncoder(writer).Encode(encounter)
+}
+
+func (handler *EncounterHandler) Delete(writer http.ResponseWriter, req *http.Request) {
+	// Dohvatite ID susreta iz URL parametara
+	params := mux.Vars(req)
+	idString := params["id"]
+	id, err := strconv.Atoi(idString)
+	if err != nil {
+		log.Println("Error parsing ID:", err)
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// Pozovite servis za brisanje susreta
+	err = handler.EncounterService.Delete(id)
+	if err != nil {
+		log.Println("Error deleting encounter:", err)
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// Ako je brisanje uspješno, vratite status kod 204 No Content
+	writer.WriteHeader(http.StatusNoContent)
 }

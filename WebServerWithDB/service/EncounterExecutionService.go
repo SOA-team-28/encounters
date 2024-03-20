@@ -38,5 +38,12 @@ func (service *EncounterExecutionService) GetAllCompletedByTourist(touristID int
 		return nil, err
 	}
 	return encounterExecutions, nil
+}
 
+func (service *EncounterExecutionService) Delete(id int) error {
+	err := service.EncounterExecutionRepo.DeleteById(id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
