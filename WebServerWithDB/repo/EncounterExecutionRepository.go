@@ -23,7 +23,6 @@ func (repo *EncounterExecutionRepository) CreateEncounterExecution(encounterExec
 	return nil
 }
 
-
 func (repo *EncounterExecutionRepository) UpdateStatusByCheckPointId(checkPointId int) error {
 	var encounterExecution model.EncounterExecution
 
@@ -61,4 +60,19 @@ func (repo *EncounterExecutionRepository) GetAllCompletedByTourist(touristID int
 
 	return encounterExecutions, nil
 
+}
+
+func (repo *EncounterExecutionRepository) DeleteById(id int) error {
+	// Prvo pronađite susret koji želite obrisati
+	var encounterExecution model.EncounterExecution
+	if err := repo.DatabaseConnection.First(&encounterExecution, id).Error; err != nil {
+		return err
+	}
+
+	// Zatim obrišite susret iz baze podataka
+	if err := repo.DatabaseConnection.Delete(&encounterExecution).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -28,7 +28,11 @@ func (h *EncounterHandler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/encounters", h.Create).Methods("POST")
 	router.HandleFunc("/encounters/getById/{id}", h.GetByID).Methods("GET")
 	router.HandleFunc("/encounters/getByCheckPoint/{id}", h.GetByCheckPointID).Methods("GET")
+
+	router.HandleFunc("/encounters/delete/{id}", h.Delete).Methods("DELETE")
+
 	router.HandleFunc("/encounters/update", h.Update).Methods("PUT")
+
 }
 
 func (handler *EncounterHandler) Create(writer http.ResponseWriter, req *http.Request) {
@@ -98,7 +102,33 @@ func (handler *EncounterHandler) GetByCheckPointID(writer http.ResponseWriter, r
 	writer.WriteHeader(http.StatusOK)
 	json.NewEncoder(writer).Encode(encounter)
 }
-func (handler *EncounterHandler) Update(writer http.ResponseWriter, req *http.Request) {
+
+
+func (handler *EncounterHandler) Delete(writer http.ResponseWriter, req *http.Request) {
+	// Dohvatite ID susreta iz URL parametara
+	params := mux.Vars(req)
+	idString := params["id"]
+	id, err := strconv.Atoi(idString)
+	if err != nil {
+		log.Println("Error parsing ID:", err)
+  }
+
+
+
+	// Pozovite servis za brisanje susreta
+	err = handler.EncounterService.Delete(id)
+	if err != nil {
+		log.Println("Error deleting encounter:", err)
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// Ako je brisanje uspješno, vratite status kod 204 No Content
+	writer.WriteHeader(http.StatusNoContent)
+
+
+}
+  func (handler *EncounterHandler) Update(writer http.ResponseWriter, req *http.Request) {
 	var encounter model.Encounter
 
 	// Ispisi telo zahtjeva prije nego što se pokuša dekodirati JSON
@@ -109,19 +139,7 @@ func (handler *EncounterHandler) Update(writer http.ResponseWriter, req *http.Re
 	errs := json.Unmarshal(body, &encounter)
 	if errs != nil {
 		fmt.Println("Greška pri parsiranju JSON-a:", errs)
+
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
-	// Ispis mape
-	fmt.Println("Mapa nakon parsiranja JSON-a:", encounter)
-
-	errp := handler.EncounterService.Update(&encounter)
-	if errp != nil {
-		println("Error while creating a new encounter")
-		writer.WriteHeader(http.StatusExpectationFailed)
-		return
-	}
-	writer.WriteHeader(http.StatusCreated)
-	writer.Header().Set("Content-Type", "application/json")
-}

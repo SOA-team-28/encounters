@@ -22,6 +22,8 @@ func InitDB() *gorm.DB {
 
 		&model.Encounter{},
 		&model.EncounterExecution{},
+		&model.HiddenLocationEncounter{},
+		&model.SocialEncounter{},
 	)
 
 	if err != nil {

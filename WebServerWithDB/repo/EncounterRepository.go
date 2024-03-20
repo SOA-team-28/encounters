@@ -41,11 +41,26 @@ func (repo *EncounterRepository) FindByCheckPointId(id int) (model.Encounter, er
 	return encounter, nil
 }
 
+func (repo *EncounterRepository) DeleteById(id int) error {
+	// Prvo pronađite susret koji želite obrisati
+	var encounter model.Encounter
+	if err := repo.DatabaseConnection.First(&encounter, id).Error; err != nil {
+		return err
+	}
+
+	// Zatim obrišite susret iz baze podataka
+	if err := repo.DatabaseConnection.Delete(&encounter).Error; err != nil {
+		return err
+	}
+
+}
+
 func (repo *EncounterRepository) Update(encounter *model.Encounter) error {
 	// Izvršavanje ažuriranja Encounter-a u bazi podataka
 	dbResult := repo.DatabaseConnection.Save(encounter)
 	if dbResult.Error != nil {
 		return dbResult.Error
 	}
+
 	return nil
 }
