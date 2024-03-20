@@ -28,7 +28,11 @@ func (h *EncounterHandler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/encounters", h.Create).Methods("POST")
 	router.HandleFunc("/encounters/getById/{id}", h.GetByID).Methods("GET")
 	router.HandleFunc("/encounters/getByCheckPoint/{id}", h.GetByCheckPointID).Methods("GET")
+
 	router.HandleFunc("/encounters/delete/{id}", h.Delete).Methods("DELETE")
+
+	router.HandleFunc("/encounters/update", h.Update).Methods("PUT")
+
 }
 
 func (handler *EncounterHandler) Create(writer http.ResponseWriter, req *http.Request) {
@@ -99,6 +103,7 @@ func (handler *EncounterHandler) GetByCheckPointID(writer http.ResponseWriter, r
 	json.NewEncoder(writer).Encode(encounter)
 }
 
+
 func (handler *EncounterHandler) Delete(writer http.ResponseWriter, req *http.Request) {
 	// Dohvatite ID susreta iz URL parametara
 	params := mux.Vars(req)
@@ -106,9 +111,9 @@ func (handler *EncounterHandler) Delete(writer http.ResponseWriter, req *http.Re
 	id, err := strconv.Atoi(idString)
 	if err != nil {
 		log.Println("Error parsing ID:", err)
-		writer.WriteHeader(http.StatusBadRequest)
-		return
-	}
+  }
+
+
 
 	// Pozovite servis za brisanje susreta
 	err = handler.EncounterService.Delete(id)
@@ -120,4 +125,21 @@ func (handler *EncounterHandler) Delete(writer http.ResponseWriter, req *http.Re
 
 	// Ako je brisanje uspješno, vratite status kod 204 No Content
 	writer.WriteHeader(http.StatusNoContent)
+
+
 }
+  func (handler *EncounterHandler) Update(writer http.ResponseWriter, req *http.Request) {
+	var encounter model.Encounter
+
+	// Ispisi telo zahtjeva prije nego što se pokuša dekodirati JSON
+	body, errr := ioutil.ReadAll(req.Body)
+	fmt.Println("errr", errr)
+	fmt.Println("Primljeno telo zahtjeva:", string(body))
+
+	errs := json.Unmarshal(body, &encounter)
+	if errs != nil {
+		fmt.Println("Greška pri parsiranju JSON-a:", errs)
+
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}

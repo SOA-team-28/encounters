@@ -41,13 +41,16 @@ func (service *EncounterService) FindByCheckPointId(id int) (*model.Encounter, e
 	}
 	return &tour, nil
 }
+
 func (service *EncounterService) Delete(id int) error {
 	err := service.EncounterRepo.DeleteById(id)
+
 	if err != nil {
 		return err
 	}
 	return nil
 }
+
 
 /*
 
@@ -77,3 +80,12 @@ func (service *EncounterService) setEncounterOnCheckpoint(checkpointId int64, en
 	// Ova funkcija treba da vrati eventualnu grešku
 	return nil
 }*/
+  
+  func (service *EncounterService) Update(encounter *model.Encounter) error {
+	err := service.EncounterRepo.Update(encounter)
+    if err != nil {
+		return err
+	}
+	return nil
+}
+
