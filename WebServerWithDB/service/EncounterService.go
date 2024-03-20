@@ -41,3 +41,11 @@ func (service *EncounterService) FindByCheckPointId(id int) (*model.Encounter, e
 	}
 	return &tour, nil
 }
+
+func (service *EncounterService) Update(encounter *model.Encounter) error {
+	err := service.EncounterRepo.Update(encounter)
+	if err != nil {
+		return err
+	}
+	return nil
+}

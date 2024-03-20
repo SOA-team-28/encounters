@@ -40,3 +40,12 @@ func (repo *EncounterRepository) FindByCheckPointId(id int) (model.Encounter, er
 	}
 	return encounter, nil
 }
+
+func (repo *EncounterRepository) Update(encounter *model.Encounter) error {
+	// Izvršavanje ažuriranja Encounter-a u bazi podataka
+	dbResult := repo.DatabaseConnection.Save(encounter)
+	if dbResult.Error != nil {
+		return dbResult.Error
+	}
+	return nil
+}
