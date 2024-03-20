@@ -23,6 +23,9 @@ func startServer() {
 	encounterExecutionHandler := handler.NewEncounterExecutionHandler(database)
 	encounterExecutionHandler.RegisterRoutes(router)
 
+	encounterRequestHandler := handler.NewEncounterRequestHandler(database)
+	encounterRequestHandler.RegisterRoutes(router)
+
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static")))
 	println("Server starting")
 	log.Fatal(http.ListenAndServe(":8082", router))

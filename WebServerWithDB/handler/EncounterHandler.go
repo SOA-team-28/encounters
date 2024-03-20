@@ -32,6 +32,7 @@ func (h *EncounterHandler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/encounters/delete/{id}", h.Delete).Methods("DELETE")
 
 	router.HandleFunc("/encounters/update", h.Update).Methods("PUT")
+	router.HandleFunc("/encounters", h.GetAll).Methods("GET")
 
 }
 
@@ -103,7 +104,6 @@ func (handler *EncounterHandler) GetByCheckPointID(writer http.ResponseWriter, r
 	json.NewEncoder(writer).Encode(encounter)
 }
 
-
 func (handler *EncounterHandler) Delete(writer http.ResponseWriter, req *http.Request) {
 	// Dohvatite ID susreta iz URL parametara
 	params := mux.Vars(req)
@@ -111,9 +111,7 @@ func (handler *EncounterHandler) Delete(writer http.ResponseWriter, req *http.Re
 	id, err := strconv.Atoi(idString)
 	if err != nil {
 		log.Println("Error parsing ID:", err)
-  }
-
-
+	}
 
 	// Pozovite servis za brisanje susreta
 	err = handler.EncounterService.Delete(id)
@@ -126,9 +124,8 @@ func (handler *EncounterHandler) Delete(writer http.ResponseWriter, req *http.Re
 	// Ako je brisanje uspješno, vratite status kod 204 No Content
 	writer.WriteHeader(http.StatusNoContent)
 
-
 }
-  func (handler *EncounterHandler) Update(writer http.ResponseWriter, req *http.Request) {
+func (handler *EncounterHandler) Update(writer http.ResponseWriter, req *http.Request) {
 	var encounter model.Encounter
 
 	// Ispisi telo zahtjeva prije nego što se pokuša dekodirati JSON
@@ -143,3 +140,24 @@ func (handler *EncounterHandler) Delete(writer http.ResponseWriter, req *http.Re
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
+}
+
+func (handler *EncounterHandler) GetAll(writer http.ResponseWriter, req *http.Request) {
+
+	encounters, err := handler.EncounterService.FindAll()
+	if err != nil {
+		fmt.Println("Greška pri dohvatu encounters:", err)
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	writer.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(writer).Encode(encounters)
+	if err != nil {
+		fmt.Println("Greška pri enkodiranju JSON odgovora:", err)
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	fmt.Println("Odgovor: ")
+	fmt.Println(encounters)
+}

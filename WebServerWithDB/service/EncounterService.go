@@ -51,7 +51,6 @@ func (service *EncounterService) Delete(id int) error {
 	return nil
 }
 
-
 /*
 
 func (service *EncounterService) CreateForTourist(encounter *model.Encounter, checkpointId int64, isSecretPrerequisite bool, userId int64) (*model.Encounter, error) {
@@ -80,12 +79,19 @@ func (service *EncounterService) setEncounterOnCheckpoint(checkpointId int64, en
 	// Ova funkcija treba da vrati eventualnu grešku
 	return nil
 }*/
-  
-  func (service *EncounterService) Update(encounter *model.Encounter) error {
+
+func (service *EncounterService) Update(encounter *model.Encounter) error {
 	err := service.EncounterRepo.Update(encounter)
-    if err != nil {
+	if err != nil {
 		return err
 	}
 	return nil
 }
 
+func (service *EncounterService) FindAll() ([]model.Encounter, error) {
+	encounters, err := service.EncounterRepo.FindAll()
+	if err != nil {
+		return nil, fmt.Errorf("encounters not found: %v", err)
+	}
+	return encounters, nil
+}
