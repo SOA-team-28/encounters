@@ -57,8 +57,24 @@ func (repo *EncounterRepository) DeleteById(id int) error {
 }
 
 func (repo *EncounterRepository) Update(encounter *model.Encounter) error {
+
+	existingEncounter, err := repo.FindByCheckPointId(encounter.CheckPointId)
+	if err != nil {
+		return err
+	}
+
+	existingEncounter.Description = encounter.Description
+	existingEncounter.Name = encounter.Name
+	existingEncounter.Type = encounter.Type
+	existingEncounter.Status = encounter.Status
+	existingEncounter.Range = encounter.Range
+	existingEncounter.LocationLatitude = encounter.LocationLongitude
+	existingEncounter.LocationLatitude = encounter.LocationLatitude
+	existingEncounter.RequiredPeople = encounter.RequiredPeople
+	existingEncounter.XP = encounter.XP
+
 	// Izvršavanje ažuriranja Encounter-a u bazi podataka
-	dbResult := repo.DatabaseConnection.Save(encounter)
+	dbResult := repo.DatabaseConnection.Save(existingEncounter)
 	if dbResult.Error != nil {
 		return dbResult.Error
 	}
