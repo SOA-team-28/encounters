@@ -103,7 +103,6 @@ func (handler *EncounterHandler) GetByCheckPointID(writer http.ResponseWriter, r
 	json.NewEncoder(writer).Encode(encounter)
 }
 
-
 func (handler *EncounterHandler) Delete(writer http.ResponseWriter, req *http.Request) {
 	// Dohvatite ID susreta iz URL parametara
 	params := mux.Vars(req)
@@ -111,9 +110,7 @@ func (handler *EncounterHandler) Delete(writer http.ResponseWriter, req *http.Re
 	id, err := strconv.Atoi(idString)
 	if err != nil {
 		log.Println("Error parsing ID:", err)
-  }
-
-
+	}
 
 	// Pozovite servis za brisanje susreta
 	err = handler.EncounterService.Delete(id)
@@ -126,9 +123,8 @@ func (handler *EncounterHandler) Delete(writer http.ResponseWriter, req *http.Re
 	// Ako je brisanje uspješno, vratite status kod 204 No Content
 	writer.WriteHeader(http.StatusNoContent)
 
-
 }
-  func (handler *EncounterHandler) Update(writer http.ResponseWriter, req *http.Request) {
+func (handler *EncounterHandler) Update(writer http.ResponseWriter, req *http.Request) {
 	var encounter model.Encounter
 
 	// Ispisi telo zahtjeva prije nego što se pokuša dekodirati JSON
@@ -143,3 +139,4 @@ func (handler *EncounterHandler) Delete(writer http.ResponseWriter, req *http.Re
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
+}
