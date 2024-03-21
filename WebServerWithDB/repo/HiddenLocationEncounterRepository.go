@@ -14,7 +14,7 @@ func NewHiddenLocationEncounterRepository(databaseConnection *gorm.DB) *HiddenLo
 	return &HiddenLocationEncounterRepository{DatabaseConnection: databaseConnection}
 }
 
-func (repo *HiddenLocationEncounterRepository) CreateHiddenLocationEncounter(encounter *model.HiddenLocationEncounter) error {
+func (repo *HiddenLocationEncounterRepository) CreateHiddenLocationEncounterByTourist(encounter *model.HiddenLocationEncounter) error {
 	dbResult := repo.DatabaseConnection.Create(encounter)
 	if dbResult.Error != nil {
 		return dbResult.Error
