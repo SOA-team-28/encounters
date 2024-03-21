@@ -32,6 +32,7 @@ func (h *EncounterHandler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/encounters/delete/{id}", h.Delete).Methods("DELETE")
 
 	router.HandleFunc("/encounters/update", h.Update).Methods("PUT")
+	router.HandleFunc("/encounters", h.GetAll).Methods("GET")
 
 }
 
@@ -139,4 +140,24 @@ func (handler *EncounterHandler) Update(writer http.ResponseWriter, req *http.Re
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
+}
+
+func (handler *EncounterHandler) GetAll(writer http.ResponseWriter, req *http.Request) {
+
+	encounters, err := handler.EncounterService.FindAll()
+	if err != nil {
+		fmt.Println("Greška pri dohvatu encounters:", err)
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	writer.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(writer).Encode(encounters)
+	if err != nil {
+		fmt.Println("Greška pri enkodiranju JSON odgovora:", err)
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	fmt.Println("Odgovor: ")
+	fmt.Println(encounters)
 }

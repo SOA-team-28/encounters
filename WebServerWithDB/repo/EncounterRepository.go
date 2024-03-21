@@ -53,6 +53,7 @@ func (repo *EncounterRepository) DeleteById(id int) error {
 		return err
 	}
 
+	return nil
 }
 
 func (repo *EncounterRepository) Update(encounter *model.Encounter) error {
@@ -63,4 +64,12 @@ func (repo *EncounterRepository) Update(encounter *model.Encounter) error {
 	}
 
 	return nil
+}
+func (repo *EncounterRepository) FindAll() ([]model.Encounter, error) {
+	var encounters []model.Encounter
+	dbResult := repo.DatabaseConnection.Find(&encounters)
+	if dbResult.Error != nil {
+		return nil, dbResult.Error
+	}
+	return encounters, nil
 }
