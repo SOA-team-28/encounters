@@ -14,7 +14,7 @@ func NewSocialEncounterRepository(databaseConnection *gorm.DB) *SocialEncounterR
 	return &SocialEncounterRepository{DatabaseConnection: databaseConnection}
 }
 
-func (repo *HiddenLocationEncounterRepository) CreateSocialEncounter(encounter *model.SocialEncounter) error {
+func (repo *SocialEncounterRepository) CreateSocialEncounterByTourist(encounter *model.SocialEncounter) error {
 	dbResult := repo.DatabaseConnection.Create(encounter)
 	if dbResult.Error != nil {
 		return dbResult.Error

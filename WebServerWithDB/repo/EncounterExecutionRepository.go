@@ -69,7 +69,6 @@ func (repo *EncounterExecutionRepository) DeleteById(id int) error {
 		return err
 	}
 
-	// Zatim obrišite susret iz baze podataka
 	if err := repo.DatabaseConnection.Delete(&encounterExecution).Error; err != nil {
 		return err
 	}

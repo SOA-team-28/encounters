@@ -59,3 +59,12 @@ func (repo *EncounterRequestRepository) Reject(id int) error {
 	println("Updated successfully! ")
 	return nil
 }
+
+func (repo *EncounterRequestRepository) Create(encounter *model.EncounterRequest) error {
+	dbResult := repo.DatabaseConnection.Create(encounter)
+	if dbResult.Error != nil {
+		return dbResult.Error
+	}
+	println("Rows affected: ", dbResult.RowsAffected)
+	return nil
+}

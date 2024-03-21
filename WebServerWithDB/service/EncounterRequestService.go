@@ -38,3 +38,11 @@ func (service *EncounterRequestService) Reject(id int) error {
 	}
 	return nil
 }
+
+func (service *EncounterRequestService) Create(encounter *model.EncounterRequest) error {
+	err := service.EncounterRequestRepo.Create(encounter)
+	if err != nil {
+		return err
+	}
+	return nil
+}
